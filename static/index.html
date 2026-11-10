@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TranscribePH Pro - Accurate Tagalog, English & Taglish Video Transcriber</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" x2="12" y1="19" y2="22"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Transcribe<span>PH</span> Pro</h1>
+          <p class="subtitle">High-Precision Tagalog, English & Taglish AI Video Transcriber</p>
+        </div>
+      </div>
+      <div class="header-badges">
+        <span class="badge badge-accent">🎯 High-Precision Tagalog</span>
+        <span class="badge badge-subtle">🇵🇭 Taglish Code-Switching Tuned</span>
+        <span class="badge badge-outline">🛡️ Anti-Repetition Guard</span>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      
+      <!-- Upload & Configuration Card -->
+      <section class="card config-card" id="configCard">
+        <div class="card-header">
+          <div class="step-indicator">1</div>
+          <div>
+            <h2>Upload Video & Transcription Settings</h2>
+            <p>Upload your video or audio file. Whisper Medium is set as default for crystal-clear Tagalog speech recognition.</p>
+          </div>
+        </div>
+
+        <form id="transcribeForm">
+          <!-- Drop Area -->
+          <div class="drop-zone" id="dropZone">
+            <input type="file" id="videoFileInput" accept="video/*,audio/*" required>
+            <div class="drop-zone-content">
+              <div class="upload-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" x2="12" y1="3" y2="15"/>
+                </svg>
+              </div>
+              <p class="drop-title">Drag & drop your video here, or <span class="highlight">browse</span></p>
+              <p class="drop-hint">Supports MP4, MKV, MOV, WEBM, AVI, MP3, WAV, M4A up to multi-gigabyte files</p>
+              <div class="selected-file-pill" id="selectedFilePill" style="display:none;">
+                <span class="file-name" id="selectedFileName">video.mp4</span>
+                <span class="file-size" id="selectedFileSize">0 MB</span>
+                <button type="button" class="btn-clear-file" id="clearFileBtn" title="Remove">&times;</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Engine Selector -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label style="font-weight: 700; color: #fff; margin-bottom: 8px;">Transcription Engine</label>
+            <div class="engine-toggle-grid">
+              <label class="engine-card active" id="engineWhisperLabel">
+                <input type="radio" name="engine" value="whisper" checked id="engineWhisper">
+                <div class="engine-info">
+                  <strong>⚡ Local Faster-Whisper AI</strong>
+                  <span>100% Free, Private, Offline. Uses CPU/INT8.</span>
+                </div>
+              </label>
+              <label class="engine-card" id="engineGeminiLabel">
+                <input type="radio" name="engine" value="gemini" id="engineGemini">
+                <div class="engine-info">
+                  <strong>✨ Google Gemini 2.5 Flash</strong>
+                  <span>100% Human-grade Tagalog/Taglish accuracy & context. Requires free API key.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Gemini API Key Box (Hidden by default) -->
+          <div class="form-group full-width" id="geminiKeyBox" style="display: none; background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px;">
+            <label for="geminiApiKey" style="color: #c7d2fe;">
+              Google Gemini API Key
+              <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #818cf8; font-size: 0.8rem; margin-left: 8px; text-decoration: underline;">Get a free key here (instant, no card needed)</a>
+            </label>
+            <input type="password" id="geminiApiKey" class="form-input" placeholder="AIzaSy..." style="background: rgba(15, 23, 42, 0.8);">
+            <span class="field-hint" style="color: #94a3b8;">Provides absolute highest possible Taglish accuracy and slangs.</span>
+          </div>
+
+          <!-- Whisper Settings Grid -->
+          <div class="settings-grid" id="whisperSettingsGrid">
+            <div class="form-group">
+              <label for="modelSelect">
+                Whisper AI Model
+                <span class="tooltip-badge" title="Medium model provides crystal-clear Tagalog recognition">High Accuracy</span>
+              </label>
+              <select id="modelSelect" class="form-select">
+                <option value="large-v3">🔥 Large-v3 (Maximum Offline Accuracy - 1.55 Billion Parameters)</option>
+                <option value="large-v3-turbo">🚀 Large-v3 Turbo (High Accuracy + Fast Speed)</option>
+                <option value="medium" selected>⭐ Medium (Recommended - Crystal Clear Tagalog / Taglish)</option>
+                <option value="small">⚡ Small (Fast & Balanced)</option>
+                <option value="base">⚡ Base (Draft Speed)</option>
+              </select>
+              <span class="field-hint">Quantized INT8 with Anti-Repetition guard & Dynamic Audio Normalization.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="langSelect">Language Mode</label>
+              <select id="langSelect" class="form-select">
+                <option value="tl" selected>🇵🇭 Tagalog / Filipino / Taglish (tl) - Recommended</option>
+                <option value="auto">✨ Auto-Detect (Mixed Languages)</option>
+                <option value="en">🇺🇸 English (en)</option>
+              </select>
+              <span class="field-hint">Tuned with Filipino colloquial particles and code-switching tokens.</span>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="customPrompt">
+                Taglish Context / Philippine Terms (Optional)
+              </label>
+              <input type="text" id="customPrompt" class="form-input" 
+                placeholder="e.g. BPO call center, IT thesis, Pinoy slang, company names, speakers...">
+              <span class="field-hint">Pre-seeded with Filipino colloquial hotwords (kumusta, diba, sige, opo, ano ba naman, actually).</span>
+            </div>
+          </div>
+
+          <div class="action-row">
+            <button type="submit" class="btn btn-primary" id="startTranscribeBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Start High-Precision Transcription
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Progress Card (Shown during transcription) -->
+      <section class="card progress-card" id="progressCard" style="display: none;">
+        <div class="progress-status-header">
+          <div class="pulse-indicator"></div>
+          <div class="progress-title-block">
+            <h3 id="progressPhase">Extracting Audio & Processing...</h3>
+            <p id="progressDetails">Preparing video track for speech recognition.</p>
+          </div>
+          <div class="progress-percent" id="progressPercent">0%</div>
+        </div>
+
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+        </div>
+
+        <div class="steps-flow">
+          <div class="flow-step active" id="step1">
+            <div class="dot"></div>
+            <span>Audio Extraction</span>
+          </div>
+          <div class="flow-step" id="step2">
+            <div class="dot"></div>
+            <span>AI Neural Init</span>
+          </div>
+          <div class="flow-step" id="step3">
+            <div class="dot"></div>
+            <span>High-Accuracy Decoding</span>
+          </div>
+          <div class="flow-step" id="step4">
+            <div class="dot"></div>
+            <span>Timestamp Sync</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Results Workspace (Player & Interactive Transcript) -->
+      <section class="results-workspace" id="resultsWorkspace" style="display: none;">
+        
+        <!-- Left: Video Player Column -->
+        <div class="player-column">
+          <div class="card video-card">
+            <div class="video-container">
+              <video id="videoPlayer" controls playsinline></video>
+              <div class="active-sub-overlay" id="activeSubOverlay"></div>
+            </div>
+
+            <div class="video-controls-bar">
+              <div class="btn-group">
+                <button type="button" class="btn-ctrl" id="jumpBackBtn" title="Jump back 5s">-5s</button>
+                <button type="button" class="btn-ctrl" id="togglePlayBtn" title="Play/Pause">Play/Pause</button>
+                <button type="button" class="btn-ctrl" id="jumpForwardBtn" title="Jump forward 5s">+5s</button>
+              </div>
+
+              <div class="speed-selector">
+                <span>Speed:</span>
+                <select id="playbackSpeed" class="speed-select">
+                  <option value="0.75">0.75x</option>
+                  <option value="1" selected>1.0x</option>
+                  <option value="1.25">1.25x</option>
+                  <option value="1.5">1.5x</option>
+                  <option value="2">2.0x</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="media-meta-card">
+              <div class="meta-item">
+                <span class="label">File</span>
+                <span class="val" id="metaFilename">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="label">Detected Language</span>
+                <span class="val badge-pill" id="metaLang">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="label">Duration</span>
+                <span class="val" id="metaDuration">-</span>
+              </div>
+              <div class="meta-item">
+                <span class="label">Total Segments</span>
+                <span class="val" id="metaSegmentsCount">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Synchronized Transcript Column -->
+        <div class="transcript-column">
+          <div class="card transcript-card">
+            
+            <!-- Toolbar -->
+            <div class="transcript-toolbar">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <line x1="21" x2="21" y1="21" y2="16.65"/>
+                </svg>
+                <input type="text" id="transcriptSearchInput" placeholder="Search Tagalog / English words...">
+              </div>
+
+              <div class="export-dropdown-container">
+                <button class="btn btn-export" id="exportMenuBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                  </svg>
+                  Export Subtitles
+                </button>
+                <div class="export-menu" id="exportMenu">
+                  <a href="#" class="export-opt" data-format="srt">
+                    <strong>.SRT</strong> Subtitle (Standard SubRip)
+                  </a>
+                  <a href="#" class="export-opt" data-format="vtt">
+                    <strong>.VTT</strong> WebVTT (For Web/HTML5 Players)
+                  </a>
+                  <a href="#" class="export-opt" data-format="txt">
+                    <strong>.TXT</strong> Clean Text Transcript
+                  </a>
+                  <a href="#" class="export-opt" data-format="json">
+                    <strong>.JSON</strong> Full Structured Timestamps
+                  </a>
+                </div>
+              </div>
+
+              <button class="btn btn-outline" id="copyAllBtn" title="Copy full transcript to clipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                </svg>
+                Copy
+              </button>
+
+              <button class="btn btn-polish" id="polishWordsBtn" title="Clean stutters, hesitation, and polish Tagalog/Taglish words">
+                ✨ Polish Words
+              </button>
+
+              <button class="btn btn-outline" id="saveEditsBtn" title="Save any text corrections">
+                Save Edits
+              </button>
+            </div>
+
+            <div class="editor-note">
+              <span>💡 Click any timestamp to jump video playback. Edit text directly in the boxes below if needed.</span>
+            </div>
+
+            <!-- Scrollable Segments Container -->
+            <div class="segments-list" id="segmentsList">
+              <!-- Dynamically populated segment items -->
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>TranscribePH Pro • High-Precision Tagalog/English/Taglish Speech Recognition • Anti-Repetition Guard Active</p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

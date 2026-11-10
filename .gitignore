@@ -1,0 +1,42 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+.venv/
+ENV/
+
+# Temporary media & processed assets
+uploads/
+processed/
+*.wav
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.mp3
+*.flac
+*.m4a
+!test_sample.wav
+
+# Hugging Face / CTranslate2 model cache
+models/
+huggingface/
+.cache/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
